@@ -69,7 +69,7 @@ check_oc_login(){
 
 # create a sealed secret
 create_sealed_secret(){
-  read -r -p "Create NEW [${SEALED_SECRETS_SECRET}]? [y/N] " input
+  read -r -p "Create [${SEALED_SECRETS_SECRET}]? [y/N] " input
   case $input in
     [yY][eE][sS]|[yY])
 
@@ -109,15 +109,7 @@ check_sealed_secret(){
   fi
 }
 
-other(){
-  PS3="Please select a bootstrap folder: "
-  select bootstrap_dir in bootstrap/overlays/*/; 
-  do
-      test -n "$bootstrap_dir" && break;
-      echo ">>> Invalid Selection";
-  done
-
-  echo "Selected: ${bootstrap_dir}"
+bootstarp_gitops(){
 
   echo ""
   echo "Installing GitOps Operator."
@@ -152,6 +144,23 @@ other(){
     echo "Waiting for deployment $i";
     oc rollout status deployment $i -n ${ARGO_NS}
   done
+  
+  echo ""
+  echo "OpenShift GitOps successfully installed."
+
+}
+
+other(){
+  PS3="Please select a bootstrap folder: "
+  select bootstrap_dir in bootstrap/overlays/*/; 
+  do
+      test -n "$bootstrap_dir" && break;
+      echo ">>> Invalid Selection";
+  done
+
+  echo "Selected: ${bootstrap_dir}"
+
+  bootstarp_gitops
 
   echo "Apply overlay to override default instance"
   kustomize build ${bootstrap_dir} | oc apply -f -
