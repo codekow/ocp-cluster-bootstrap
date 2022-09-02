@@ -24,7 +24,7 @@ jobs:
       - name: Validate Manifests
         run: ./validate_manifests.sh
 
-  yaml-script-lint:
+  yaml-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Code Checkout
@@ -40,5 +40,15 @@ jobs:
           pip install yamllint bashlint
       - name: Validate Manifests
         run: yamllint . -f github
-      - name: Validate Scripts
+      - name: Validate Scripts (bonus)
         run: bashlint . || true
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        version: v0.8.0
