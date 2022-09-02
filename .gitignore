@@ -1,0 +1,7 @@
+generated
+
+.idea/
+venv/
+
+# Sealed secret key
+bootstrap/base/sealed-secrets-secret.yaml
