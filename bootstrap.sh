@@ -109,15 +109,7 @@ check_sealed_secret(){
   fi
 }
 
-other(){
-  PS3="Please select a bootstrap folder: "
-  select bootstrap_dir in bootstrap/overlays/*/; 
-  do
-      test -n "$bootstrap_dir" && break;
-      echo ">>> Invalid Selection";
-  done
-
-  echo "Selected: ${bootstrap_dir}"
+install_gitops(){
 
   echo ""
   echo "Installing GitOps Operator."
@@ -152,7 +144,13 @@ other(){
     echo "Waiting for deployment $i";
     oc rollout status deployment $i -n ${ARGO_NS}
   done
+  
+  echo ""
+  echo "OpenShift GitOps successfully installed."
 
+}
+
+bootstrap_cluster(){
   echo "Apply overlay to override default instance"
   kustomize build ${bootstrap_dir} | oc apply -f -
 
@@ -164,6 +162,22 @@ other(){
     echo "Waiting for deployment $i";
     oc rollout status deployment $i -n ${ARGO_NS}
   done
+
+}
+
+other(){
+  PS3="Please select a bootstrap folder: "
+  select bootstrap_dir in bootstrap/overlays/*/; 
+  do
+      test -n "$bootstrap_dir" && break;
+      echo ">>> Invalid Selection";
+  done
+
+  echo "Selected: ${bootstrap_dir}"
+
+  install_gitops
+
+  bootstrap_cluster
 
   echo ""
   echo "GitOps has successfully deployed!  Check the status of the sync here:"
