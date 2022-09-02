@@ -24,7 +24,7 @@ jobs:
       - name: Validate Manifests
         run: ./validate_manifests.sh
 
-  yaml-lint:
+  yaml-script-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Code Checkout
