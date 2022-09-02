@@ -69,7 +69,7 @@ check_oc_login(){
 
 # create a sealed secret
 create_sealed_secret(){
-  read -r -p "Create [${SEALED_SECRETS_SECRET}]? [y/N] " input
+  read -r -p "Create NEW [${SEALED_SECRETS_SECRET}]? [y/N] " input
   case $input in
     [yY][eE][sS]|[yY])
 
