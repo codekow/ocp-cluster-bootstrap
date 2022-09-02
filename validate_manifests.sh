@@ -40,7 +40,7 @@ do
   esac
 done
 
-for i in `find "${KUSTOMIZE_DIRS}" -name "kustomization.yaml" -exec dirname {} \;`; 
+for i in `find "${KUSTOMIZE_DIRS}" -name "kustomization.yaml" -exec dirname {} \;`
 do
 
   if [[ ${i} == *"./bootstrap"* ]]; then
@@ -62,7 +62,7 @@ do
     echo "Error building $i"
     exit 1
   fi
-  
+
 #  echo "$KUSTOMIZE_BUILD_OUTPUT" | kubeval ${IGNORE_MISSING_SCHEMAS} --schema-location="file://${SCHEMA_LOCATION}" --force-color
 
 #  validation_response=$?
