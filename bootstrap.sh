@@ -82,7 +82,7 @@ create_sealed_secret(){
 
       # just wait for it
       sleep 20
-      
+
       oc -n sealed-secrets -o yaml \
         get secret \
         -l sealedsecrets.bitnami.com/sealed-secrets-key=active \
@@ -179,3 +179,5 @@ check_kustomize
 
 check_oc_login
 check_sealed_secret
+
+other
