@@ -7,35 +7,39 @@ ARGO_NS="openshift-gitops"
 SEALED_SECRETS_FOLDER=components/operators/sealed-secrets-operator/overlays/default/
 SEALED_SECRETS_SECRET=bootstrap/base/sealed-secrets-secret.yaml
 
-OCP_VERSION=${OCP_VERSION}
+OCP_VERSION=4.10
 TMP_DIR=generated
 
 
 setup_bin() {
   mkdir -p ${TMP_DIR}/bin
-  echo ${PATH} | grep -q "${TMP_DIR}/bin" || \
-    export PATH=$(pwd)/${TMP_DIR}/bin:$PATH
+  echo "${PATH}" | grep -q "${TMP_DIR}/bin" || \
+    PATH=$(pwd)/${TMP_DIR}/bin:${PATH}
+    export PATH
 }
 
 check_ocp_install() {
-  which openshift-install 2>&1 >/dev/null || download_ocp_install
+  which openshift-install >/dev/null 2>&1 || download_ocp_install
   echo "auto-complete: . <(openshift-install completion bash)"
+  # shellcheck source=/dev/null
   . <(openshift-install completion bash)
   openshift-install version
   sleep 5
 }
 
 check_oc() {
-  which oc 2>&1 >/dev/null || download_oc
+  which oc >/dev/null 2>&1 || download_oc
   echo "auto-complete: . <(oc completion bash)"
+  # shellcheck source=/dev/null
   . <(oc completion bash)
   oc version
   sleep 5
 }
 
 check_kustomize() {
-  which kustomize 2>&1 >/dev/null || download_kustomize
+  which kustomize >/dev/null 2>&1 || download_kustomize
   echo "auto-complete: . <(kustomize completion bash)"
+  # shellcheck source=/dev/null
   . <(kustomize completion bash)
   kustomize version
   sleep 5
@@ -87,6 +91,7 @@ create_sealed_secret(){
         get secret \
         -l sealedsecrets.bitnami.com/sealed-secrets-key=active \
         > ${SEALED_SECRETS_SECRET}
+
       ;;
     [nN][oO]|[nN]*)
       echo
@@ -110,7 +115,6 @@ check_sealed_secret(){
 }
 
 install_gitops(){
-
   echo ""
   echo "Installing GitOps Operator."
 
@@ -122,51 +126,38 @@ install_gitops(){
   echo "Waiting for operator to start"
   until oc get deployment gitops-operator-controller-manager -n openshift-operators
   do
-    sleep 5;
+    sleep 5
   done
 
   echo "Waiting for openshift-gitops namespace to be created"
   until oc get ns ${ARGO_NS}
   do
-    sleep 5;
+    sleep 5
   done
 
   echo "Waiting for deployments to start"
   until oc get deployment cluster -n ${ARGO_NS}
   do
-    sleep 5;
+    sleep 5
   done
 
   echo "Waiting for all pods to be created"
   deployments=(cluster kam openshift-gitops-applicationset-controller openshift-gitops-redis openshift-gitops-repo-server openshift-gitops-server)
-  for i in "${deployments[@]}";
+  for i in "${deployments[@]}"
   do
-    echo "Waiting for deployment $i";
-    oc rollout status deployment $i -n ${ARGO_NS}
+    echo "Waiting for deployment $i"
+    oc rollout status deployment "$i" -n ${ARGO_NS}
   done
-  
+
   echo ""
   echo "OpenShift GitOps successfully installed."
 
 }
 
 bootstrap_cluster(){
-  echo "Apply overlay to override default instance"
-  kustomize build ${bootstrap_dir} | oc apply -f -
 
-  sleep 10
-  echo "Waiting for all pods to redeploy"
-  deployments=(cluster kam openshift-gitops-applicationset-controller openshift-gitops-redis openshift-gitops-repo-server openshift-gitops-server)
-  for i in "${deployments[@]}";
-  do
-    echo "Waiting for deployment $i";
-    oc rollout status deployment $i -n ${ARGO_NS}
-  done
-
-}
-
-other(){
   PS3="Please select a bootstrap folder: "
+  
   select bootstrap_dir in bootstrap/overlays/*/; 
   do
       test -n "$bootstrap_dir" && break;
@@ -174,10 +165,17 @@ other(){
   done
 
   echo "Selected: ${bootstrap_dir}"
+  echo "Apply overlay to override default instance"
+  kustomize build "${bootstrap_dir}" | oc apply -f -
 
-  install_gitops
-
-  bootstrap_cluster
+  sleep 10
+  echo "Waiting for all pods to redeploy"
+  deployments=(cluster kam openshift-gitops-applicationset-controller openshift-gitops-redis openshift-gitops-repo-server openshift-gitops-server)
+  for i in "${deployments[@]}"
+  do
+    echo "Waiting for deployment $i"
+    oc rollout status deployment "$i" -n ${ARGO_NS}
+  done
 
   echo ""
   echo "GitOps has successfully deployed!  Check the status of the sync here:"
@@ -187,11 +185,11 @@ other(){
   echo "https://${route}"
 }
 
-setup_bin
-check_oc
-check_kustomize
+# setup_bin
+# check_oc
+# check_kustomize
 
 check_oc_login
 check_sealed_secret
 
-other
+#other

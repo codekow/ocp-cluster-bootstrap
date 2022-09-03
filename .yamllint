@@ -5,6 +5,6 @@ rules:
   line-length: disable
   comments-indentation: disable
   braces:
-    ignore: /grafana-operator/base/instance/grafana.yaml
-  truthy:
-    ignore: .github/workflows/
+    ignore: grafana-operator/base/instance/grafana.yaml
+  indentation:
+    ignore: bootstrap/base/sealed-secrets-secret.yaml

@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2034,SC2044
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -40,7 +41,7 @@ do
   esac
 done
 
-for i in `find "${KUSTOMIZE_DIRS}" -name "kustomization.yaml" -exec dirname {} \;`
+for i in $(find "${KUSTOMIZE_DIRS}" -name "kustomization.yaml" -exec dirname {} \;)
 do
 
   if [[ ${i} == *"./bootstrap"* ]]; then
@@ -54,7 +55,7 @@ do
   echo "Validating $i"
   echo
 
-  KUSTOMIZE_BUILD_OUTPUT=$(${KUSTOMIZE} build $i)
+  KUSTOMIZE_BUILD_OUTPUT=$(${KUSTOMIZE} build "$i")
 
   build_response=$?
 
