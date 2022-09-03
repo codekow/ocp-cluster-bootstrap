@@ -32,8 +32,8 @@ jobs:
       - name: Validate YAML
         uses: ibiqlik/action-yamllint@v3
 
-  shellcheck:
-    name: Shellcheck
+  bash-lint:
+    name: bash-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
