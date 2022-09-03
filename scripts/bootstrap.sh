@@ -1,77 +1,16 @@
 #!/bin/bash
 set -e
 
+# shellcheck source=/dev/null
+source "$(dirname "$0")/functions.sh"
+
 LANG=C
 SLEEP_SECONDS=45
 ARGO_NS="openshift-gitops"
 SEALED_SECRETS_FOLDER=components/operators/sealed-secrets-operator/overlays/default/
 SEALED_SECRETS_SECRET=bootstrap/base/sealed-secrets-secret.yaml
 
-OCP_VERSION=4.10
-TMP_DIR=generated
 
-
-setup_bin() {
-  mkdir -p ${TMP_DIR}/bin
-  echo "${PATH}" | grep -q "${TMP_DIR}/bin" || \
-    PATH=$(pwd)/${TMP_DIR}/bin:${PATH}
-    export PATH
-}
-
-check_ocp_install() {
-  which openshift-install >/dev/null 2>&1 || download_ocp_install
-  echo "auto-complete: . <(openshift-install completion bash)"
-  # shellcheck source=/dev/null
-  . <(openshift-install completion bash)
-  openshift-install version
-  sleep 5
-}
-
-check_oc() {
-  which oc >/dev/null 2>&1 || download_oc
-  echo "auto-complete: . <(oc completion bash)"
-  # shellcheck source=/dev/null
-  . <(oc completion bash)
-  oc version
-  sleep 5
-}
-
-check_kustomize() {
-  which kustomize >/dev/null 2>&1 || download_kustomize
-  echo "auto-complete: . <(kustomize completion bash)"
-  # shellcheck source=/dev/null
-  . <(kustomize completion bash)
-  kustomize version
-  sleep 5
-}
-
-download_ocp_install() {
-  DOWNLOAD_URL=https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OCP_VERSION}/openshift-install-linux.tar.gz
-  curl "${DOWNLOAD_URL}" -L | tar vzx -C ${TMP_DIR}/bin openshift-install
-}
-
-download_oc() {
-  DOWNLOAD_URL=https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OCP_VERSION}/openshift-client-linux.tar.gz
-  curl "${DOWNLOAD_URL}" -L | tar vzx -C ${TMP_DIR}/bin oc
-}
-
-download_kustomize() {
-  cd ${TMP_DIR}/bin
-  curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-  cd ../..
-}
-
-
-# check login
-check_oc_login(){
-  oc cluster-info | head -n1
-  oc whoami || exit 1
-  echo
-
-  sleep 5
-}
-
-# create a sealed secret
 create_sealed_secret(){
   read -r -p "Create NEW [${SEALED_SECRETS_SECRET}]? [y/N] " input
   case $input in
@@ -93,7 +32,7 @@ create_sealed_secret(){
         > ${SEALED_SECRETS_SECRET}
 
       ;;
-    [nN][oO]|[nN]*)
+    [nN][oO]|[nN])
       echo
       ;;
     *)
@@ -177,19 +116,21 @@ bootstrap_cluster(){
     oc rollout status deployment "$i" -n ${ARGO_NS}
   done
 
-  echo ""
+  echo
   echo "GitOps has successfully deployed!  Check the status of the sync here:"
 
-  route=$(oc get route openshift-gitops-server -o=jsonpath='{.spec.host}' -n ${ARGO_NS})
+  route=$(oc get route openshift-gitops-server -o jsonpath='{.spec.host}' -n ${ARGO_NS})
 
   echo "https://${route}"
 }
 
-# setup_bin
-# check_oc
-# check_kustomize
+# functions
+setup_bin
+check_bin oc
+check_bin kustomize
+check_bin kubeseal
 
 check_oc_login
 check_sealed_secret
 
-#other
+install_gitops
