@@ -171,3 +171,6 @@ Resolution/Troubleshooting:
 - Validate that the Opator has successfully installed via the `Installed Operators` section of the OpenShift Web Console.
 - If the Operator has not installed, additional troubleshooting is required.
 - If the Operator has successfully installed, feel free to ignore the `Progressing` state and proceed.  `OLM` should reconcile the status after several minutes and Argo will update the state to `Healthy`.
+
+# Links
+- https://github.com/bitnami-labs/sealed-secrets/blob/main/docs/bring-your-own-certificates.md
