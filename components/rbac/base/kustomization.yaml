@@ -12,3 +12,4 @@ patches:
       group: rbac.authorization.k8s.io
       version: v1
       kind: ClusterRoleBinding
+      name: self-provisioners
