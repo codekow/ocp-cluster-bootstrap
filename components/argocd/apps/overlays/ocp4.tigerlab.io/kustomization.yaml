@@ -12,9 +12,4 @@ patches:
       kind: Application
       name: cluster-config-manager
     path: patch-cluster-config-manager.yaml
-  - target:
-      group: argoproj.io
-      version: v1alpha1
-      kind: Application
-      name: openshift-data-foundation-operator
-    path: patch-openshift-data-foundations.yaml
+

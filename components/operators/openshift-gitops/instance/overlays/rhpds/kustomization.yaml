@@ -15,6 +15,7 @@ patches:
         path: /spec/rbac/policy
         value: |
           g, system:cluster-admins, role:admin
+          g, cluster-admins, role: admin
           g, gitopsadmins, role:admin
     target:
       kind: ArgoCD
