@@ -5,3 +5,10 @@ resources:
   - cluster-admins-clusterrolebinding.yaml
   - sandbox-admins-rolebinding.yaml
   - self-provisioner-clusterrolebinding.yaml
+
+# patches:
+#   - path: patch-self-provisioner-clusterrolebinding.yaml
+#     target:
+#       group: rbac.authorization.k8s.io
+#       version: v1
+#       kind: ClusterRoleBinding
