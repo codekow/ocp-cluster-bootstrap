@@ -3,6 +3,7 @@ kind: Kustomization
 
 bases:
   - ../../base
+  - cluster-rbac-app.yaml
 
 patches:
   - target:

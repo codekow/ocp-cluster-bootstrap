@@ -11,8 +11,8 @@ spec:
     server: https://kubernetes.default.svc
   project: cluster-config
   source:
-    path: <patch-me>
-    repoURL: replace-me-see-clusters-overlays
+    path: components/rbac/overlays/default
+    repoURL: https://github.com/codekow/ocp-cluster-bootstrap.git
     targetRevision: main
   syncPolicy:
     automated:
