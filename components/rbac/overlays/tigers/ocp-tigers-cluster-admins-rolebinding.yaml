@@ -1,11 +1,11 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: cluster-admins-tiger
+  name: ocp-tigers-cluster-admins
 subjects:
   - kind: Group
     apiGroup: rbac.authorization.k8s.io
-    name: 'cluster-admins-tiger'
+    name: 'ocp-tigers'
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: cluster-config
   source:
-    path: components/rbac/overlays/default
+    path: components/rbac/overlays/tigers
     repoURL: https://github.com/codekow/ocp-cluster-bootstrap.git
     targetRevision: main
   syncPolicy:
