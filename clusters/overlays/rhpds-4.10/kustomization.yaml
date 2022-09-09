@@ -4,7 +4,8 @@ kind: Kustomization
 namespace: openshift-gitops
 
 bases:
-  - ../../base
+  - ../../components/argocd/applicationsets/overlays/mlops
+  - ../../components/argocd/projects/overlays/default
   - ../../../components/argocd/apps/overlays/rhpds-4.10
 
 patches:
